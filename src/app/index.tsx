@@ -1,8 +1,7 @@
-import '@/components/ui/globals.css';
 import Header from '../components/custom/Header'
 import Footer from '../components/custom/Footer'
 
-function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col">
@@ -15,6 +14,3 @@ function RootLayout({ children }: { children: React.ReactNode }) {
     </html>
   )
 }
-
-
-export default RootLayout;

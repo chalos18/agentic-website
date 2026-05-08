@@ -148,7 +148,7 @@ When working on portfolio features, ask:
 ## Expansion to Blog
 
 ### Prerequisite Architecture
-- Separate content structure (`/portfolio`, `/blog` routes)
+- Separate content structure (`/home`, `/blog` routes)
 - Metadata system for tagging, categorizing, searching
 - Reusable page templates (featured project, article, case study)
 - Content loader (JSON Schema, MDX, or headless CMS integration)

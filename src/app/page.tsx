@@ -1,4 +1,14 @@
 export default function Home() {
+  const skills = [
+    'Python',
+    'Locust',
+    'PostgreSQL',
+    'Google Cloud Platform',
+    'Azure',
+    'API Development',
+    'Mentoring',
+    'Scrum',
+  ];
   return (
     <div className="container mx-auto px-4 py-8">
       <section className="text-center mb-12">
@@ -14,12 +24,20 @@ export default function Home() {
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-6">Skills</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 border rounded">Python</div>
-          <div className="p-4 border rounded">Locust</div>
-          <div className="p-4 border rounded">PostgreSQL</div>
-          <div className="p-4 border rounded">Google Cloud Platform</div>
-          <div className="p-4 border rounded">Azure</div>
-          <div className="p-4 border rounded">API Development</div>
+          {skills.map((skill) => (
+            <div key={skill} className="p-4 border rounded">
+              {skill}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-2xl font-semibold mb-6">Featured Projects</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="p-6 border rounded">
+            <h3 className="text-xl font-semibold mb-2">Performance Testing Framework</h3>
+          </div>
           <div className="p-4 border rounded">Mentoring</div>
           <div className="p-4 border rounded">Scrum</div>
         </div>

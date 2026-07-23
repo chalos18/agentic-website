@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Home() {
   const skills = [
     'Python',
@@ -52,9 +54,9 @@ export default function Home() {
               Led the design and implementation of a scalable API stress-testing framework
               using Locust, enabling performance benchmarking across production-scale workloads.
             </p>
-            <a href="/portfolio/performance-testing" className="text-blue-600 hover:underline">
+            <Link href="/portfolio/performance-testing" className="text-blue-600 hover:underline">
               View Project →
-            </a>
+            </Link>
           </div>
           <div className="p-6 border rounded">
             <h3 className="text-xl font-semibold mb-2">GCP Migration</h3>
@@ -62,9 +64,9 @@ export default function Home() {
               Contributed to migrating a production Python API from Azure to Google Cloud Platform,
               implementing backend services and storage structures.
             </p>
-            <a href="/portfolio/gcp-migration" className="text-blue-600 hover:underline">
+            <Link href="/portfolio/gcp-migration" className="text-blue-600 hover:underline">
               View Project →
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -74,9 +76,9 @@ export default function Home() {
         <div className="space-y-4">
           <article className="p-4 border rounded">
             <h3 className="text-lg font-semibold mb-2">
-              <a href="/blog/sample-post" className="text-blue-600 hover:underline">
+              <Link href="/blog/sample-post" className="text-blue-600 hover:underline">
                 Sample Post
-              </a>
+              </Link>
             </h3>
             <p className="text-gray-600">A sample blog post to validate MDX rendering.</p>
             <time className="text-sm text-gray-500">April 27, 2026</time>

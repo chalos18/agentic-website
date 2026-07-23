@@ -1,10 +1,19 @@
 # Portfolio Application
 
-To test the application use the following commands
+Ana Oliveira's professional portfolio site, built with Next.js. Includes a blog, project case studies, and an interactive Rubik's Cube trainer.
 
-docker build .
-docker run -p 5000:3000 <image_tag>
+## Getting started
 
--p specifies port forwarding which allows you to access the application in your container at host 3000 but exposed to port 5000
+```bash
+npm install
+npm run dev
+```
 
-You can then find the app exposed to http://127.0.0.1:5000/
+The app runs at http://localhost:3000
+
+## Scripts
+
+- `npm run dev` — start the dev server
+- `npm run build` — production build
+- `npm start` — run the production build
+- `npm run lint` / `npm run lint:fix` — lint the codebase

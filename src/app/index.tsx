@@ -1,7 +1,8 @@
+import type { ReactNode } from 'react';
 import Header from '../components/custom/Header'
 import Footer from '../components/custom/Footer'
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col">

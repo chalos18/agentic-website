@@ -262,7 +262,7 @@ export class CubeState {
             times = 2;
         }
 
-        let result = this;
+        let result: CubeState = this;
         for (let i = 0; i < times; i++) {
             result = result.applyMove(moveChar);
         }
@@ -275,7 +275,7 @@ export class CubeState {
      * Apply a sequence of moves
      */
     public moves(notations: MoveNotation[]): CubeState {
-        let result = this;
+        let result: CubeState = this;
         for (const notation of notations) {
             result = result.move(notation);
         }

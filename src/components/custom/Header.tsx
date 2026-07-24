@@ -1,19 +1,51 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import Logo from '@/components/motifs/Logo';
+
+const NAV_LINKS = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/rubiks', label: "Rubik's" },
+  { href: '/contact', label: 'Contact' },
+];
 
 export default function Header() {
+  const pathname = usePathname();
+
   return (
-    <header className="p-4 border-b">
-      <div className="container mx-auto">
+    <header className="sticky top-0 z-20 bg-cream/90 backdrop-blur border-b border-clay-line">
+      <div className="container mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+        <Link href="/" className="flex items-center gap-2 group">
+          <Logo className="w-8 h-8 transition-transform group-hover:-rotate-6" />
+          <span className="font-display text-lg font-semibold text-espresso">Ana Oliveira</span>
+        </Link>
+
         <nav>
-          <ul className="flex flex-wrap gap-4">
-            <li><Link href="/" className="hover:text-blue-600">Home</Link></li>
-            <li><Link href="/about" className="hover:text-blue-600">About</Link></li>
-            <li><Link href="/contact" className="hover:text-blue-600">Contact</Link></li>
-            <li><Link href="/blog" className="hover:text-blue-600">Blog</Link></li>
-            <li><Link href="/rubiks" className="hover:text-blue-600">Rubik&apos;s</Link></li>
+          <ul className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm font-medium">
+            {NAV_LINKS.map(({ href, label }) => {
+              const isActive = href === '/' ? pathname === '/' : pathname?.startsWith(href);
+              return (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className={`pb-0.5 border-b-2 transition-colors ${
+                      isActive
+                        ? 'border-terracotta text-terracotta-dark'
+                        : 'border-transparent text-espresso-light hover:text-terracotta hover:border-terracotta-light'
+                    }`}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
       </div>
     </header>
-  )
+  );
 }

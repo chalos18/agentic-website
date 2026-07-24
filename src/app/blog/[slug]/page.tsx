@@ -24,7 +24,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   return (
     <article className="container mx-auto px-4 py-12 max-w-2xl">
       <header className="mb-8">
-        {isRecipe && <Doodle variant="whisk" className="w-9 h-9 text-mustard-dark mb-3" />}
+        {isRecipe && <Doodle variant="burger" className="w-9 h-9 text-mustard-dark mb-3" />}
         <h1 className="font-display text-4xl font-semibold text-espresso mb-2">{frontmatter.title}</h1>
         <time className="text-sm text-espresso-light/70">{frontmatter.date}</time>
       </header>

@@ -1,0 +1,19 @@
+---
+title: "LLM-Assisted Data Import Tool"
+slug: "llm-data-import-tool"
+date: 2026
+tech: ["AWS Lambda", "PostgreSQL", "Terraform", "SQS", "Kysely", "LLM Evaluation"]
+summary: "Architected and co-led an internal tool that uses LLMs to classify and transform data columns against a target schema, with a custom evaluation harness for grading generated output."
+category: "work"
+---
+
+Currently leading development of this tool alongside one other engineer, after moving
+on from the chat interface project. It uses an LLM to help classify and transform data
+columns against a target schema.
+
+I designed and built the full architecture from scratch: a serverless backend on AWS
+Lambda with PostgreSQL for storage (via Kysely), infrastructure defined in Terraform,
+and asynchronous processing through SQS queues backed by dead-letter queues for
+handling failures. On top of that, I built an LLM evaluation harness with an automated
+scoring system and an LLM-as-judge approach for grading the quality of generated prose
+output during data processing.

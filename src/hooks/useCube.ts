@@ -9,6 +9,8 @@ import { useState, useCallback } from 'react';
 import { CubeState } from '@/services/CubeState';
 import { MoveNotation } from '@/types/cube';
 
+type CubeStatus = 'solved' | 'scrambling' | 'solving';
+
 interface UseCubeReturn {
     cube: CubeState;
     applyMove: (move: MoveNotation) => void;
@@ -18,6 +20,7 @@ interface UseCubeReturn {
     undo: () => void;
     isSolved: boolean;
     moveHistory: MoveNotation[];
+    status: CubeStatus;
 }
 
 export function useCube(initialScramble?: boolean): UseCubeReturn {
@@ -28,6 +31,11 @@ export function useCube(initialScramble?: boolean): UseCubeReturn {
         }
         return newCube;
     });
+    // Moves before this index in the cube's history belong to the scramble,
+    // not the solve — they're excluded from the displayed move count/history.
+    const [scrambleBaseline, setScrambleBaseline] = useState(
+        initialScramble ? cube.getMoveHistory().length : 0
+    );
 
     const applyMove = useCallback((move: MoveNotation) => {
         setCube((prevCube) => prevCube.move(move));
@@ -38,11 +46,14 @@ export function useCube(initialScramble?: boolean): UseCubeReturn {
     }, []);
 
     const scramble = useCallback((numMoves: number = 20) => {
-        setCube((prevCube) => prevCube.scramble(numMoves));
-    }, []);
+        const scrambled = cube.scramble(numMoves);
+        setCube(scrambled);
+        setScrambleBaseline(scrambled.getMoveHistory().length);
+    }, [cube]);
 
     const reset = useCallback(() => {
         setCube(new CubeState());
+        setScrambleBaseline(0);
     }, []);
 
     const undo = useCallback(() => {
@@ -50,7 +61,8 @@ export function useCube(initialScramble?: boolean): UseCubeReturn {
     }, []);
 
     const isSolved = cube.isSolved();
-    const moveHistory = cube.getMoveHistory();
+    const moveHistory = cube.getMoveHistory().slice(scrambleBaseline);
+    const status: CubeStatus = isSolved ? 'solved' : moveHistory.length === 0 ? 'scrambling' : 'solving';
 
     return {
         cube,
@@ -61,5 +73,6 @@ export function useCube(initialScramble?: boolean): UseCubeReturn {
         undo,
         isSolved,
         moveHistory,
+        status,
     };
 }

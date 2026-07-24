@@ -1,20 +1,35 @@
 import Link from 'next/link';
 import Doodle from '@/components/motifs/Doodle';
+import SkillsBowl from '@/components/custom/SkillsBowl';
 import { getAllPosts, getAllProjects } from '@/lib/content';
 
 const skills = [
   'Python',
-  'LLM Evaluation Frameworks',
-  'Locust',
+  'Vue.js',
+  'Node.js',
+  'Kysely',
   'PostgreSQL',
   'Google Cloud Platform',
   'Azure',
-  'AWS',
+  'AWS Lambda',
+  'SQS & DLQ',
   'Terraform',
+  'LLM Evaluation',
+  'Locust',
   'CI/CD',
   'API Development',
   'Mentoring',
   'Behavioural Interviewing',
+];
+
+// A handful of standouts get to swim in the soup; the rest of the pantry is listed below it.
+const SOUP_SKILLS = ['Python', 'Node.js', 'Terraform', 'LLM Evaluation', 'Mentoring'];
+const pantrySkills = skills.filter((skill) => !SOUP_SKILLS.includes(skill));
+
+const PANTRY_PILL_STYLES = [
+  'bg-sage/15 text-sage-dark',
+  'bg-mustard/20 text-mustard-dark',
+  'bg-terracotta/15 text-terracotta-dark',
 ];
 
 const FEATURED_SLUGS = ['performance-testing-framework', 'gcp-migration'];
@@ -26,14 +41,16 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 py-12">
       <section className="relative text-center mb-20 max-w-2xl mx-auto">
-        <Doodle variant="steam" className="hidden sm:block absolute -top-6 -left-10 w-14 h-14 text-mustard-dark rotate-[-8deg]" />
+        <Doodle variant="burger" className="hidden sm:block absolute -top-6 -left-10 w-14 h-14 text-mustard-dark rotate-[-8deg]" />
         <Doodle variant="cube" className="hidden sm:block absolute -top-4 -right-10 w-14 h-14 text-terracotta rotate-6" />
         <h1 className="font-display text-5xl font-semibold text-espresso mb-3">Ana Oliveira</h1>
-        <p className="text-xl text-terracotta-dark font-medium mb-6">Associate Software Engineer</p>
+        <p className="text-xl text-terracotta-dark font-medium mb-6">Software Engineer</p>
         <p className="text-lg text-espresso-light leading-relaxed">
           Passionate learner with a background in mentoring, leading, and teaching.
-          Software engineer with strong Python and backend expertise, specializing in
-          performance testing, GCP, and AI integrations.
+          Full stack software engineer working across Vue, Node.js, Kysely, and Python,
+          with a growing focus on AI: integrating LLMs into product workflows and building
+          evaluation harnesses with LLM-as-judge scoring. Backend foundations in GCP, AWS,
+          and Terraform-managed infrastructure.
         </p>
         <div className="flex flex-wrap justify-center gap-3 mt-8">
           <Link
@@ -53,32 +70,38 @@ export default function Home() {
 
       <section className="mb-20">
         <h2 className="font-display text-2xl font-semibold text-espresso mb-6 flex items-center gap-2">
-          <Doodle variant="whisk" className="w-6 h-6 text-sage-dark" />
+          <Doodle variant="burger" className="w-6 h-6 text-sage-dark" />
           Skills
         </h2>
-        <div className="flex flex-wrap gap-3">
-          {skills.map((skill) => (
-            <span
-              key={skill}
-              className="px-4 py-2 rounded-full bg-cream-deep border border-clay-line text-espresso text-sm font-medium"
-            >
-              {skill}
-            </span>
-          ))}
+        <p className="text-sm text-espresso-light mb-2">Move your mouse over the bowl to stir the alphabet soup.</p>
+        <SkillsBowl skills={SOUP_SKILLS} />
+
+        <div className="mt-8">
+          <p className="text-xs uppercase tracking-wide text-espresso-light/70 mb-3">Rest of the pantry</p>
+          <div className="flex flex-wrap gap-2">
+            {pantrySkills.map((skill, i) => (
+              <span
+                key={skill}
+                className={`px-2.5 py-1 rounded-full text-xs font-medium ${PANTRY_PILL_STYLES[i % PANTRY_PILL_STYLES.length]}`}
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
       <section className="mb-20">
         <h2 className="font-display text-2xl font-semibold text-espresso mb-6 flex items-center gap-2">
-          <Doodle variant="bowl" className="w-6 h-6 text-terracotta" />
+          <Doodle variant="pan" className="w-6 h-6 text-terracotta" />
           Featured Projects
         </h2>
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-6 items-stretch">
           {projects.map(({ frontmatter }) => (
-            <div key={frontmatter.slug} className="p-6 rounded-2xl bg-cream-deep border border-clay-line shadow-warm">
+            <div key={frontmatter.slug} className="flex flex-col p-6 rounded-2xl bg-cream-deep border border-clay-line shadow-warm">
               <h3 className="font-display text-xl font-semibold text-espresso mb-2">{frontmatter.title}</h3>
               <p className="text-espresso-light mb-4">{frontmatter.summary}</p>
-              <Link href={`/projects/${frontmatter.slug}`} className="text-sage-dark font-medium hover:text-terracotta-dark hover:underline">
+              <Link href={`/projects/${frontmatter.slug}`} className="mt-auto text-sage-dark font-medium hover:text-terracotta-dark hover:underline">
                 View project →
               </Link>
             </div>
@@ -93,7 +116,7 @@ export default function Home() {
 
       <section>
         <h2 className="font-display text-2xl font-semibold text-espresso mb-6 flex items-center gap-2">
-          <Doodle variant="steam" className="w-6 h-6 text-mustard-dark" />
+          <Doodle variant="burger" className="w-6 h-6 text-mustard-dark" />
           Latest Posts
         </h2>
         <div className="space-y-4">

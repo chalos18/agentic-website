@@ -8,11 +8,11 @@ export default function AboutPage() {
     <div className="container mx-auto px-4 py-12 max-w-3xl">
       <div className="flex flex-col sm:flex-row gap-8 items-center sm:items-start mb-10">
         <div className="w-32 h-32 shrink-0 rounded-full bg-cream-deep border-2 border-clay-line flex items-center justify-center">
-          <Doodle variant="cherry" className="w-14 h-14 text-terracotta" />
+          <Doodle variant="burger" className="w-14 h-14 text-terracotta" />
         </div>
         <div>
           <h1 className="font-display text-4xl font-semibold text-espresso mb-2">About</h1>
-          <p className="text-terracotta-dark font-medium">Associate Software Engineer</p>
+          <p className="text-terracotta-dark font-medium">Software Engineer</p>
         </div>
       </div>
 

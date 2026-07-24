@@ -6,13 +6,13 @@
 'use client';
 
 import { Canvas } from '@react-three/fiber';
-import { PerspectiveCamera, OrbitControls, Lights } from '@react-three/drei';
+import { PerspectiveCamera, OrbitControls } from '@react-three/drei';
 import CubeMesh from './CubeMesh';
 import { CubeState } from '@/services/CubeState';
 
 interface CubeCanvasProps {
     cubeState: CubeState;
-    onMoveApplied?: (move: string) => void;
+    onMoveApplied?: () => void;
 }
 
 export default function CubeCanvas({ cubeState, onMoveApplied }: CubeCanvasProps) {

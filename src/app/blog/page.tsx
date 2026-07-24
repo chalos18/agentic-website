@@ -10,8 +10,8 @@ export default function BlogPage() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-2xl">
       <h1 className="font-display text-4xl font-semibold text-espresso mb-8 flex items-center gap-3">
-        <Doodle variant="whisk" className="w-8 h-8 text-sage-dark" />
-        Blog
+        <Doodle variant="burger" className="w-8 h-8 text-sage-dark" />
+        Blog & Recipes
       </h1>
 
       <div className="space-y-5">

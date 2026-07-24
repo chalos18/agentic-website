@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Rubik's Cube Interactive Trainer Page
  * Full interactive 3D cube with algorithm trainer
  */
@@ -11,13 +11,14 @@ import CubeControls from '@/components/Cube/CubeControls';
 import MoveHistory from '@/components/Cube/MoveHistory';
 import AlgorithmInput from '@/components/Algorithm/AlgorithmInput';
 import AlgorithmPlayback from '@/components/Algorithm/AlgorithmPlayback';
+import Doodle from '@/components/motifs/Doodle';
 import { useCube } from '@/hooks/useCube';
 import { MoveNotation } from '@/types/cube';
 
 type TabType = 'input' | 'playback';
 
 export default function RubiksPage() {
-    const { cube, applyMove, scramble, reset, undo, isSolved, moveHistory } = useCube(false);
+    const { cube, applyMove, scramble, reset, undo, moveHistory, status } = useCube(false);
     const [activeTab, setActiveTab] = useState<TabType>('input');
     const [parsedAlgorithm, setParsedAlgorithm] = useState<MoveNotation[]>([]);
 
@@ -31,12 +32,15 @@ export default function RubiksPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+        <div className="min-h-screen bg-cream">
             {/* Header */}
-            <header className="border-b border-gray-700 bg-gray-900/50 backdrop-blur sticky top-0 z-10">
-                <div className="max-w-7xl mx-auto px-6 py-6">
-                    <h1 className="text-4xl font-bold">Rubik&apos;s Cube Trainer</h1>
-                    <p className="text-gray-400 mt-2">Interactive 3D solver and algorithm trainer</p>
+            <header className="border-b border-clay-line bg-cream-deep/60 backdrop-blur sticky top-0 z-10">
+                <div className="max-w-7xl mx-auto px-6 py-6 flex items-center gap-3">
+                    <Doodle variant="cube" className="w-9 h-9 text-terracotta hidden sm:block" />
+                    <div>
+                        <h1 className="font-display text-4xl font-semibold text-espresso">Rubik&apos;s Cube Trainer</h1>
+                        <p className="text-espresso-light mt-1">Interactive 3D solver and algorithm trainer</p>
+                    </div>
                 </div>
             </header>
 
@@ -45,27 +49,29 @@ export default function RubiksPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* 3D Cube Canvas - Main focus */}
                     <div className="lg:col-span-2">
-                        <div className="bg-gray-800 rounded-lg overflow-hidden shadow-2xl border border-gray-700 h-96 lg:h-[600px] mb-6">
-                            <Suspense fallback={<div className="w-full h-full bg-gray-900 animate-pulse" />}>
+                        <div className="bg-gradient-to-br from-espresso to-espresso-light rounded-2xl overflow-hidden shadow-warm-lg border border-espresso h-96 lg:h-[600px] mb-6">
+                            <Suspense fallback={<div className="w-full h-full bg-espresso animate-pulse" />}>
                                 <CubeCanvas cubeState={cube} />
                             </Suspense>
                         </div>
 
                         {/* Status and info */}
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                                <p className="text-gray-400 text-sm uppercase tracking-wider">Status</p>
+                            <div className="bg-cream-deep rounded-2xl p-4 border border-clay-line">
+                                <p className="text-espresso-light text-sm uppercase tracking-wider">Status</p>
                                 <p className="text-2xl font-bold mt-2">
-                                    {isSolved ? (
-                                        <span className="text-green-400">✓ Solved!</span>
+                                    {status === 'solved' ? (
+                                        <span className="text-sage-dark">✓ Solved!</span>
+                                    ) : status === 'scrambling' ? (
+                                        <span className="text-terracotta-dark">Scrambling...</span>
                                     ) : (
-                                        <span className="text-yellow-400">Solving...</span>
+                                        <span className="text-mustard-dark">Solving...</span>
                                     )}
                                 </p>
                             </div>
-                            <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                                <p className="text-gray-400 text-sm uppercase tracking-wider">Moves</p>
-                                <p className="text-2xl font-bold mt-2 text-blue-400">{moveHistory.length}</p>
+                            <div className="bg-cream-deep rounded-2xl p-4 border border-clay-line">
+                                <p className="text-espresso-light text-sm uppercase tracking-wider">Moves</p>
+                                <p className="text-2xl font-bold mt-2 text-terracotta-dark">{moveHistory.length}</p>
                             </div>
                         </div>
                     </div>
@@ -83,12 +89,12 @@ export default function RubiksPage() {
 
                         {/* Tabs for Algorithm Tools */}
                         <div className="space-y-4">
-                            <div className="flex gap-2 border-b border-gray-700">
+                            <div className="flex gap-2 border-b border-clay-line">
                                 <button
                                     onClick={() => setActiveTab('input')}
                                     className={`px-4 py-2 text-sm font-semibold transition-colors ${activeTab === 'input'
-                                        ? 'text-blue-400 border-b-2 border-blue-400'
-                                        : 'text-gray-400 hover:text-gray-300'
+                                        ? 'text-terracotta-dark border-b-2 border-terracotta'
+                                        : 'text-espresso-light hover:text-espresso'
                                         }`}
                                 >
                                     Input
@@ -96,8 +102,8 @@ export default function RubiksPage() {
                                 <button
                                     onClick={() => setActiveTab('playback')}
                                     className={`px-4 py-2 text-sm font-semibold transition-colors ${activeTab === 'playback'
-                                        ? 'text-blue-400 border-b-2 border-blue-400'
-                                        : 'text-gray-400 hover:text-gray-300'
+                                        ? 'text-terracotta-dark border-b-2 border-terracotta'
+                                        : 'text-espresso-light hover:text-espresso'
                                         }`}
                                 >
                                     Playback
@@ -129,24 +135,24 @@ export default function RubiksPage() {
                 </div>
 
                 {/* Tutorial Section */}
-                <section className="mt-16 py-8 border-t border-gray-700">
-                    <h2 className="text-2xl font-bold mb-6">How to Use</h2>
+                <section className="mt-16 py-8 border-t border-clay-line">
+                    <h2 className="font-display text-2xl font-semibold text-espresso mb-6">How to Use</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-                            <h3 className="text-lg font-bold text-blue-400 mb-2">🎮 Interactive Cube</h3>
-                            <p className="text-gray-400 text-sm">
+                        <div className="bg-cream-deep rounded-2xl p-6 border border-clay-line">
+                            <h3 className="text-lg font-bold text-terracotta-dark mb-2">🎮 Interactive Cube</h3>
+                            <p className="text-espresso-light text-sm">
                                 Click and drag to rotate the cube. Use the control buttons to scramble, reset, or undo moves.
                             </p>
                         </div>
-                        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-                            <h3 className="text-lg font-bold text-blue-400 mb-2">⌨️ Algorithm Input</h3>
-                            <p className="text-gray-400 text-sm">
+                        <div className="bg-cream-deep rounded-2xl p-6 border border-clay-line">
+                            <h3 className="text-lg font-bold text-terracotta-dark mb-2">⌨️ Algorithm Input</h3>
+                            <p className="text-espresso-light text-sm">
                                 Enter Rubik&apos;s cube notation (e.g., &quot;R U R&apos; U&apos;;&quot;) to input algorithms. Supports all standard moves.
                             </p>
                         </div>
-                        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-                            <h3 className="text-lg font-bold text-blue-400 mb-2">▶️ Playback Control</h3>
-                            <p className="text-gray-400 text-sm">
+                        <div className="bg-cream-deep rounded-2xl p-6 border border-clay-line">
+                            <h3 className="text-lg font-bold text-terracotta-dark mb-2">▶️ Playback Control</h3>
+                            <p className="text-espresso-light text-sm">
                                 Use playback controls to step through algorithms, adjust speed, and practice solving techniques.
                             </p>
                         </div>

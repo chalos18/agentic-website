@@ -7,10 +7,10 @@ import Logo from '@/components/motifs/Logo';
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
-  { href: '/blog', label: 'Blog' },
+  { href: '/blog', label: 'Blog & Recipes' },
   { href: '/projects', label: 'Projects' },
+  { href: '/paintings', label: 'Paintings' },
   { href: '/rubiks', label: "Rubik's" },
-  { href: '/contact', label: 'Contact' },
 ];
 
 export default function Header() {

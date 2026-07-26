@@ -1,164 +1,164 @@
 /**
- * Rubik's Cube Interactive Trainer Page
- * Full interactive 3D cube with algorithm trainer
+ * Twisty Puzzle Trainer
+ * Seven puzzles, one engine: pick a shape, scramble it, and turn its layers.
  */
 
 'use client';
 
-import { Suspense, useState } from 'react';
-import CubeCanvas from '@/components/Cube/CubeCanvas';
-import CubeControls from '@/components/Cube/CubeControls';
+import { Suspense, useState, type ReactNode } from 'react';
+import PuzzleCanvas from '@/components/Cube/PuzzleCanvas';
+import PuzzleControls from '@/components/Cube/PuzzleControls';
 import MoveHistory from '@/components/Cube/MoveHistory';
 import AlgorithmInput from '@/components/Algorithm/AlgorithmInput';
-import AlgorithmPlayback from '@/components/Algorithm/AlgorithmPlayback';
-import Doodle from '@/components/motifs/Doodle';
-import { useCube } from '@/hooks/useCube';
-import { MoveNotation } from '@/types/cube';
-
-type TabType = 'input' | 'playback';
+import PuzzleGlyph from '@/components/motifs/PuzzleGlyph';
+import { usePuzzle } from '@/hooks/usePuzzle';
+import { PUZZLES, PUZZLE_ORDER, type PuzzleId } from '@/services/puzzles/definitions';
+import type { MoveNotation } from '@/types/cube';
 
 export default function RubiksPage() {
-    const { cube, applyMove, scramble, reset, undo, moveHistory, status } = useCube(false);
-    const [activeTab, setActiveTab] = useState<TabType>('input');
-    const [parsedAlgorithm, setParsedAlgorithm] = useState<MoveNotation[]>([]);
+    const [puzzleId, setPuzzleId] = useState<PuzzleId>('3x3');
+    const definition = PUZZLES[puzzleId];
+    const {
+        puzzle,
+        turn,
+        duration,
+        completeTurn,
+        applyMove,
+        enqueue,
+        undo,
+        scramble,
+        reset,
+        pending,
+        speed,
+        setSpeed,
+        solveMoves,
+        status,
+    } = usePuzzle(puzzleId);
 
-    const handleAlgorithmParsed = (moves: MoveNotation[]) => {
-        setParsedAlgorithm(moves);
-        setActiveTab('playback');
-    };
-
-    const handleMoveFromAlgorithm = (move: MoveNotation) => {
-        applyMove(move);
-    };
+    const runAlgorithm = (moves: MoveNotation[]) => enqueue(moves as string[]);
 
     return (
         <div className="min-h-screen bg-cream">
-            {/* Header */}
-            <header className="border-b border-clay-line bg-cream-deep/60 backdrop-blur sticky top-0 z-10">
-                <div className="max-w-7xl mx-auto px-6 py-6 flex items-center gap-3">
-                    <Doodle variant="cube" className="w-9 h-9 text-terracotta hidden sm:block" />
-                    <div>
-                        <h1 className="font-display text-4xl font-semibold text-espresso">Rubik&apos;s Cube Trainer</h1>
-                        <p className="text-espresso-light mt-1">Interactive 3D solver and algorithm trainer</p>
-                    </div>
+            <header className="border-b border-clay-line bg-cream-deep/70">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
+                    <h1 className="font-display text-3xl sm:text-4xl font-semibold text-espresso">
+                        Twisty Puzzle Trainer
+                    </h1>
+                    <p className="text-espresso-light mt-1 max-w-2xl">
+                        Nine puzzles carved from one geometry engine. Every turn you ask for rotates
+                        real pieces around a real axis, not a repainted grid.
+                    </p>
                 </div>
             </header>
 
-            {/* Main content */}
-            <main className="max-w-7xl mx-auto px-6 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    {/* 3D Cube Canvas - Main focus */}
-                    <div className="lg:col-span-2">
-                        <div className="bg-gradient-to-br from-espresso to-espresso-light rounded-2xl overflow-hidden shadow-warm-lg border border-espresso h-96 lg:h-[600px] mb-6">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+                <nav aria-label="Choose a puzzle" className="mb-8">
+                    <ul className="flex flex-wrap gap-2">
+                        {PUZZLE_ORDER.map((id) => {
+                            const isActive = id === puzzleId;
+                            return (
+                                <li key={id}>
+                                    <button
+                                        onClick={() => setPuzzleId(id)}
+                                        aria-current={isActive ? 'true' : undefined}
+                                        className={`flex items-center gap-2 pl-2.5 pr-4 py-2 rounded-full border-2 text-sm font-medium transition-colors ${isActive
+                                            ? 'border-terracotta bg-terracotta text-cream'
+                                            : 'border-clay-line bg-cream-deep text-espresso-light hover:border-terracotta-light hover:text-terracotta-dark'
+                                            }`}
+                                    >
+                                        <PuzzleGlyph puzzle={id} className="w-5 h-5" />
+                                        {PUZZLES[id].label}
+                                    </button>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </nav>
+
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                    <div className="lg:col-span-3 space-y-6">
+                        <div className="relative bg-gradient-to-br from-espresso to-espresso-light rounded-2xl overflow-hidden shadow-warm-lg h-[22rem] sm:h-[30rem] lg:h-[34rem]">
                             <Suspense fallback={<div className="w-full h-full bg-espresso animate-pulse" />}>
-                                <CubeCanvas cubeState={cube} />
+                                <PuzzleCanvas
+                                    key={puzzleId}
+                                    puzzle={puzzle}
+                                    turn={turn}
+                                    duration={duration}
+                                    onTurnComplete={completeTurn}
+                                />
                             </Suspense>
+                            {pending > 0 && (
+                                <p className="absolute bottom-3 right-4 text-xs font-mono text-cream/70">
+                                    {pending} queued
+                                </p>
+                            )}
                         </div>
 
-                        {/* Status and info */}
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-cream-deep rounded-2xl p-4 border border-clay-line">
-                                <p className="text-espresso-light text-sm uppercase tracking-wider">Status</p>
-                                <p className="text-2xl font-bold mt-2">
-                                    {status === 'solved' ? (
-                                        <span className="text-sage-dark">✓ Solved!</span>
-                                    ) : status === 'scrambling' ? (
-                                        <span className="text-terracotta-dark">Scrambling...</span>
-                                    ) : (
-                                        <span className="text-mustard-dark">Solving...</span>
-                                    )}
-                                </p>
-                            </div>
-                            <div className="bg-cream-deep rounded-2xl p-4 border border-clay-line">
-                                <p className="text-espresso-light text-sm uppercase tracking-wider">Moves</p>
-                                <p className="text-2xl font-bold mt-2 text-terracotta-dark">{moveHistory.length}</p>
-                            </div>
+                        <div className="grid grid-cols-3 gap-4">
+                            <Stat label="State">
+                                {status === 'solved' ? (
+                                    <span className="text-sage-dark">Solved</span>
+                                ) : status === 'scrambled' ? (
+                                    <span className="text-terracotta-dark">Scrambled</span>
+                                ) : (
+                                    <span className="text-mustard-dark">In progress</span>
+                                )}
+                            </Stat>
+                            <Stat label="Your moves">
+                                <span className="text-terracotta-dark">{solveMoves.length}</span>
+                            </Stat>
+                            <Stat label="Pieces">
+                                <span className="text-espresso">{puzzle.shapes.length}</span>
+                            </Stat>
                         </div>
+
+                        <section className="bg-cream-deep rounded-2xl p-6 border border-clay-line">
+                            <h2 className="font-display text-xl font-semibold text-espresso mb-2">
+                                {definition.label}
+                            </h2>
+                            <p className="text-espresso-light">{definition.blurb}</p>
+                            <a
+                                href={definition.guideUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block mt-4 text-sage-dark font-medium hover:text-terracotta-dark hover:underline"
+                            >
+                                Read a beginner method for the {definition.label} →
+                            </a>
+                        </section>
                     </div>
 
-                    {/* Sidebar - Controls, Input & Playback */}
                     <div className="lg:col-span-2 space-y-6">
-                        {/* Cube Controls */}
-                        <CubeControls
-                            onScramble={() => scramble()}
-                            onReset={() => reset()}
-                            onUndo={() => undo()}
-                            onMove={(move) => applyMove(move)}
-                            canUndo={moveHistory.length > 0}
+                        <PuzzleControls
+                            definition={definition}
+                            onMove={applyMove}
+                            onScramble={scramble}
+                            onReset={reset}
+                            onUndo={undo}
+                            canUndo={puzzle.history.length > 0}
+                            speed={speed}
+                            onSpeedChange={setSpeed}
                         />
 
-                        {/* Tabs for Algorithm Tools */}
-                        <div className="space-y-4">
-                            <div className="flex gap-2 border-b border-clay-line">
-                                <button
-                                    onClick={() => setActiveTab('input')}
-                                    className={`px-4 py-2 text-sm font-semibold transition-colors ${activeTab === 'input'
-                                        ? 'text-terracotta-dark border-b-2 border-terracotta'
-                                        : 'text-espresso-light hover:text-espresso'
-                                        }`}
-                                >
-                                    Input
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab('playback')}
-                                    className={`px-4 py-2 text-sm font-semibold transition-colors ${activeTab === 'playback'
-                                        ? 'text-terracotta-dark border-b-2 border-terracotta'
-                                        : 'text-espresso-light hover:text-espresso'
-                                        }`}
-                                >
-                                    Playback
-                                </button>
-                            </div>
+                        <AlgorithmInput
+                            onMovesParsed={runAlgorithm}
+                            placeholder="R U R' U' — paste an algorithm to watch it run"
+                            puzzleId={puzzleId}
+                        />
 
-                            {/* Algorithm Input Tab */}
-                            {activeTab === 'input' && (
-                                <AlgorithmInput
-                                    onMovesParsed={handleAlgorithmParsed}
-                                    placeholder="Enter algorithm notation..."
-                                />
-                            )}
-
-                            {/* Algorithm Playback Tab */}
-                            {activeTab === 'playback' && (
-                                <AlgorithmPlayback
-                                    moves={parsedAlgorithm}
-                                    onMoveApplied={handleMoveFromAlgorithm}
-                                />
-                            )}
-                        </div>
-
-                        {/* Move History - Compact */}
-                        <div className="max-h-64 overflow-hidden">
-                            <MoveHistory moves={moveHistory} />
-                        </div>
+                        <MoveHistory moves={solveMoves} />
                     </div>
                 </div>
-
-                {/* Tutorial Section */}
-                <section className="mt-16 py-8 border-t border-clay-line">
-                    <h2 className="font-display text-2xl font-semibold text-espresso mb-6">How to Use</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="bg-cream-deep rounded-2xl p-6 border border-clay-line">
-                            <h3 className="text-lg font-bold text-terracotta-dark mb-2">🎮 Interactive Cube</h3>
-                            <p className="text-espresso-light text-sm">
-                                Click and drag to rotate the cube. Use the control buttons to scramble, reset, or undo moves.
-                            </p>
-                        </div>
-                        <div className="bg-cream-deep rounded-2xl p-6 border border-clay-line">
-                            <h3 className="text-lg font-bold text-terracotta-dark mb-2">⌨️ Algorithm Input</h3>
-                            <p className="text-espresso-light text-sm">
-                                Enter Rubik&apos;s cube notation (e.g., &quot;R U R&apos; U&apos;;&quot;) to input algorithms. Supports all standard moves.
-                            </p>
-                        </div>
-                        <div className="bg-cream-deep rounded-2xl p-6 border border-clay-line">
-                            <h3 className="text-lg font-bold text-terracotta-dark mb-2">▶️ Playback Control</h3>
-                            <p className="text-espresso-light text-sm">
-                                Use playback controls to step through algorithms, adjust speed, and practice solving techniques.
-                            </p>
-                        </div>
-                    </div>
-                </section>
             </main>
+        </div>
+    );
+}
+
+function Stat({ label, children }: { label: string; children: ReactNode }) {
+    return (
+        <div className="bg-cream-deep rounded-2xl p-4 border border-clay-line">
+            <p className="text-espresso-light text-xs uppercase tracking-wider">{label}</p>
+            <p className="text-xl font-bold mt-1.5">{children}</p>
         </div>
     );
 }

@@ -41,7 +41,7 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 py-12">
       <section className="relative text-center mb-20 max-w-2xl mx-auto">
-        <Doodle variant="burger" className="hidden sm:block absolute -top-6 -left-10 w-14 h-14 text-mustard-dark rotate-[-8deg]" />
+        <Doodle variant="skewer" className="hidden sm:block absolute -top-6 -left-10 w-14 h-14 text-mustard-dark rotate-[-8deg]" />
         <Doodle variant="cube" className="hidden sm:block absolute -top-4 -right-10 w-14 h-14 text-terracotta rotate-6" />
         <h1 className="font-display text-5xl font-semibold text-espresso mb-3">Ana Oliveira</h1>
         <p className="text-xl text-terracotta-dark font-medium mb-6">Software Engineer</p>
@@ -70,10 +70,10 @@ export default function Home() {
 
       <section className="mb-20">
         <h2 className="font-display text-2xl font-semibold text-espresso mb-6 flex items-center gap-2">
-          <Doodle variant="burger" className="w-6 h-6 text-sage-dark" />
+          <Doodle variant="bowl" className="w-6 h-6 text-sage-dark" />
           Skills
         </h2>
-        <p className="text-sm text-espresso-light mb-2">Move your mouse over the bowl to stir the alphabet soup.</p>
+        <p className="text-sm text-espresso-light mb-2">Stir the soup with your cursor to move the letters around.</p>
         <SkillsBowl skills={SOUP_SKILLS} />
 
         <div className="mt-8">
@@ -116,7 +116,7 @@ export default function Home() {
 
       <section>
         <h2 className="font-display text-2xl font-semibold text-espresso mb-6 flex items-center gap-2">
-          <Doodle variant="burger" className="w-6 h-6 text-mustard-dark" />
+          <Doodle variant="cake" className="w-6 h-6 text-mustard-dark" />
           Latest Posts
         </h2>
         <div className="space-y-4">

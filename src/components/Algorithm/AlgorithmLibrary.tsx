@@ -10,7 +10,7 @@ import { Algorithm, SolvingStage } from '@/types/cube';
 import { useAlgorithms } from '@/hooks/useAlgorithms';
 
 interface AlgorithmLibraryProps {
-    onAlgorithmSelect?: (algorithm: Algorithm) => void;
+    onAlgorithmSelect?: (_algorithm: Algorithm) => void;
 }
 
 export default function AlgorithmLibrary({ onAlgorithmSelect }: AlgorithmLibraryProps) {

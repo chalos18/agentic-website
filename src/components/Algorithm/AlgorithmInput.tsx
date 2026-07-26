@@ -7,18 +7,69 @@
 
 import { useState } from 'react';
 import { MoveNotation } from '@/types/cube';
-import { parseMoveSequence, validateMove } from '@/utils/MoveParser';
+import { parseMoveSequence } from '@/utils/MoveParser';
+import { PUZZLES, type PuzzleId } from '@/services/puzzles/definitions';
 
 interface AlgorithmInputProps {
-    onMovesParsed?: (moves: MoveNotation[]) => void;
-    onError?: (error: string) => void;
+    onMovesParsed?: (_moves: MoveNotation[]) => void;
+    onError?: (_error: string) => void;
     placeholder?: string;
+    puzzleId?: PuzzleId;
 }
+
+// Curated per-shape examples — a 3x3 T-Perm means nothing on a 2x2 (no fixed
+// centres, no F2L) and needs wide-move notation to make sense on a 4x4/5x5.
+const EXAMPLES_BY_PUZZLE: Partial<Record<PuzzleId, { name: string; moves: string }[]>> = {
+    '2x2': [
+        { name: 'Sexy Move', moves: "R U R' U'" },
+        { name: 'Ortega OLL (all corners)', moves: "R U R' U R U2 R'" },
+        { name: 'Ortega PLL (swap adjacent)', moves: "R U' R U R U R U' R' U' R2" },
+    ],
+    '3x3': [
+        { name: 'Sexy Move', moves: "R U R' U'" },
+        { name: 'T-Perm', moves: "R U R' U' R' F R2 U' R' U' R U R' F'" },
+        { name: 'Cross', moves: "D' R2 D L2 D'" },
+    ],
+    '4x4': [
+        { name: 'Sexy Move', moves: "R U R' U'" },
+        { name: 'OLL Parity', moves: "Rw U2 x Rw U2 Rw U2 Rw' U2 Lw U2 Rw' U2 Rw U2 Rw' U2 Rw'" },
+        { name: 'PLL Parity (edge swap)', moves: "Rw2 Uw2 Rw2 Uw2" },
+    ],
+    '5x5': [
+        { name: 'Sexy Move', moves: "R U R' U'" },
+        { name: 'Centre Building Helper', moves: "Rw U Rw' U Rw U2 Rw'" },
+        { name: '3x3 Reduction T-Perm', moves: "R U R' U' R' F R2 U' R' U' R U R' F'" },
+    ],
+    pyraminx: [
+        { name: 'Sledgehammer', moves: "R' L R L'" },
+        { name: 'Last Layer (3 edges CCW)', moves: "R U R' U R U R'" },
+        { name: 'Last Layer (3 edges CW)', moves: "R U' R' U' R U' R'" },
+    ],
+    skewb: [
+        { name: 'Down Down Up Up', moves: "L R' L' R" },
+        { name: 'Corner Cycle', moves: "R L' R' L" },
+    ],
+    megaminx: [
+        { name: 'Star Case', moves: "F U R U' R' F'" },
+        { name: 'Edge Flip', moves: "F R U R' U' F'" },
+        { name: '3x3 T-Perm (edge cycle)', moves: "R U R' U' R' F R2 U' R' U' R U R' F'" },
+    ],
+    mastermorphix: [
+        { name: 'Sexy Move', moves: "R U R' U'" },
+        { name: 'T-Perm', moves: "R U R' U' R' F R2 U' R' U' R U R' F'" },
+        { name: 'Cross', moves: "D' R2 D L2 D'" },
+    ],
+    ivy: [
+        { name: 'Corner Commutator', moves: "R L' R' L" },
+        { name: 'Centre Swap', moves: "L' U U L" },
+    ],
+};
 
 export default function AlgorithmInput({
     onMovesParsed,
     onError,
     placeholder = 'Enter moves (e.g., R U R\' U\')',
+    puzzleId = '3x3',
 }: AlgorithmInputProps) {
     const [input, setInput] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -58,11 +109,7 @@ export default function AlgorithmInput({
         setInput(moves);
     };
 
-    const examples = [
-        { name: 'Sexy Move', moves: 'R U R\' U\'' },
-        { name: 'T-Perm', moves: 'R U R\' U\' R\' F R2 U\' R\' U\' R U R\' F\'' },
-        { name: 'Cross', moves: 'D\' R2 D L2 D\'' },
-    ];
+    const examples = EXAMPLES_BY_PUZZLE[puzzleId] ?? EXAMPLES_BY_PUZZLE['3x3']!;
 
     return (
         <div className="bg-cream-deep rounded-2xl p-6 border border-clay-line space-y-4">
@@ -136,11 +183,9 @@ export default function AlgorithmInput({
             <div className="bg-cream rounded-lg p-3 space-y-1 border border-clay-line">
                 <p className="text-xs text-espresso font-semibold">TIPS:</p>
                 <ul className="text-xs text-espresso-light space-y-1 list-disc list-inside">
-                    <li>R, L, U, D, F, B for standard moves</li>
-                    <li>Add apostrophe (R&apos;) for inverse rotations</li>
-                    <li>Add 2 (R2) for double turns</li>
-                    <li>x, y, z for whole cube rotations</li>
-                    <li>M, E, S for middle layer moves</li>
+                    <li>{Object.keys(PUZZLES[puzzleId].moves).join(', ')} for this puzzle&apos;s moves</li>
+                    <li>Add apostrophe (e.g. R&apos;) for inverse rotations</li>
+                    <li>Add 2 (e.g. R2) for double turns</li>
                 </ul>
             </div>
         </div>

@@ -6,10 +6,14 @@
 import { MoveNotation } from '@/types/cube';
 
 /**
- * Parse a string of moves into an array of valid notations
- * Supports: "R U R' U'" or "R U R' U' " with flexible spacing
+ * Parse a string of moves into an array of valid notations.
+ * Supports: "R U R' U'" or "R U R' U' " with flexible spacing.
+ *
+ * `validMoveNames`, when given, restricts base moves to that puzzle's own
+ * move names (e.g. a Skewb only has U/R/L/B; a Megaminx has twelve named
+ * faces) instead of the fixed 3x3-shaped regex used as a fallback.
  */
-export function parseMoveSequence(sequence: string): MoveNotation[] {
+export function parseMoveSequence(sequence: string, validMoveNames?: string[]): MoveNotation[] {
     const moves: MoveNotation[] = [];
 
     // Remove extra spaces and normalize
@@ -19,7 +23,7 @@ export function parseMoveSequence(sequence: string): MoveNotation[] {
     for (const token of tokens) {
         if (token.length === 0) continue;
 
-        const move = validateMove(token);
+        const move = validateMove(token, validMoveNames);
         if (move) {
             moves.push(move);
         } else {
@@ -34,39 +38,29 @@ export function parseMoveSequence(sequence: string): MoveNotation[] {
  * Validate and normalize a single move token
  * Returns the standardized MoveNotation or null if invalid
  */
-export function validateMove(token: string): MoveNotation | null {
+export function validateMove(token: string, validMoveNames?: string[]): MoveNotation | null {
     // Remove any whitespace
     const clean = token.trim();
 
-    // Valid base moves and their modifiers
-    const validMoves = [
-        'R', 'L', 'U', 'D', 'F', 'B',
-        'x', 'y', 'z',        // Cube rotations
-        'M', 'E', 'S',        // Middle slices
-    ];
-
-    // Extract base move (first character)
-    const base = clean.charAt(0);
-
-    if (!validMoves.includes(base)) {
-        return null;
+    if (validMoveNames) {
+        // Every puzzle's own move names end with a letter, so a trailing
+        // `'` or `2` is always just a turn-count modifier, never part of the base.
+        const base = /[2']$/.test(clean) ? clean.slice(0, -1) : clean;
+        return validMoveNames.includes(base) ? (clean as MoveNotation) : null;
     }
 
-    // Check modifiers (rest of the string)
-    const modifier = clean.slice(1);
-
-    if (modifier === '' || modifier === "'") {
-        // R or R'
-        if (modifier === "'") {
-            return (base + "'") as MoveNotation;
-        }
-        return base as MoveNotation;
-    } else if (modifier === '2') {
-        // R2
-        return (base + '2') as MoveNotation;
-    } else {
-        return null; // Invalid modifier
+    // Face moves, with the optional wide-turn depth/`w` used on 4x4/5x5+
+    // (e.g. R, Rw, 2Rw, Rw2, Rw') as named in services/puzzles/definitions.ts.
+    if (/^\d*[RLUDFB]w?(2|')?$/.test(clean)) {
+        return clean as MoveNotation;
     }
+
+    // Whole-cube rotations and middle slices, e.g. x2, M'.
+    if (/^[xyzMES](2|')?$/.test(clean)) {
+        return clean as MoveNotation;
+    }
+
+    return null;
 }
 
 /**

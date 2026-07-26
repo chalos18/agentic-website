@@ -15,7 +15,7 @@ When asked to work on this repo: prefer extending the existing content model (`c
 - `npm start` — run the production build
 - `npm run lint` / `npm run lint:fix` — ESLint (flat config in `eslint.config.js`, extends `next/core-web-vitals`)
 
-There is no test runner configured in this repo (no Jest/Vitest, no `*.test.*`/`*.spec.*` files, no `test` script). `src/services/IMPLEMENTATION_GUIDE.ts` references `npm test -- CubeState.test.ts` as an aspirational example only — don't assume that command works.
+There is no test runner configured in this repo (no Jest/Vitest, no `*.test.*`/`*.spec.*` files, no `test` script). The puzzle engine under `src/services/puzzles/` is pure and dependency-free, so it is the part most worth covering first if one is added.
 
 Docker is not used in this repo; run the app with `npm run dev` (see `README.md`).
 

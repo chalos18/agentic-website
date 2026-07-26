@@ -8,6 +8,8 @@ interface PaintingImageProps {
   name: string;
   motif: PaintingMotifVariant;
   className?: string;
+  fit?: 'cover' | 'contain';
+  sizes?: string;
 }
 
 const PLACEHOLDER_GRADIENTS = [
@@ -22,11 +24,31 @@ function gradientFor(name: string): string {
   return PLACEHOLDER_GRADIENTS[hash % PLACEHOLDER_GRADIENTS.length];
 }
 
-export default function PaintingImage({ src, exists, alt, name, motif, className = 'aspect-[4/3]' }: PaintingImageProps) {
+export default function PaintingImage({
+  src,
+  exists,
+  alt,
+  name,
+  motif,
+  className = 'aspect-[4/3]',
+  fit = 'cover',
+  sizes = '(max-width: 768px) 100vw, 33vw',
+}: PaintingImageProps) {
   if (exists && src) {
+    // Full paintings vary wildly in aspect ratio (square, portrait, landscape),
+    // so `contain` keeps the whole canvas visible instead of cropping into it.
+    const isContain = fit === 'contain';
     return (
-      <div className={`relative overflow-hidden rounded-xl ${className}`}>
-        <Image src={src} alt={alt} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
+      <div
+        className={`relative overflow-hidden rounded-xl ${isContain ? 'bg-cream-deep' : ''} ${className}`}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes={sizes}
+          className={isContain ? 'object-contain' : 'object-cover'}
+        />
       </div>
     );
   }

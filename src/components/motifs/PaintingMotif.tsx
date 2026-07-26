@@ -6,7 +6,9 @@ export type PaintingMotifVariant =
   | 'deathstar'
   | 'leagueoflegends'
   | 'lukeskywalker'
-  | 'jojo';
+  | 'jojo'
+  | 'radiohead'
+  | 'rockband';
 
 interface PaintingMotifProps {
   variant: PaintingMotifVariant;
@@ -68,6 +70,31 @@ const PATHS: Record<PaintingMotifVariant, ReactNode> = {
       <path d="M38 10 L30 18" />
       <path d="M18 30 L10 38" />
       <circle cx="24" cy="24" r="5" />
+    </>
+  ),
+  radiohead: (
+    <>
+      <circle cx="24" cy="24" r="17" />
+      <circle cx="17" cy="18" r="1.4" />
+      <circle cx="30" cy="15" r="1.4" />
+      <circle cx="33" cy="26" r="1.4" />
+      <circle cx="20" cy="32" r="1.4" />
+      <circle cx="28" cy="30" r="1.4" />
+      <path d="M24 24 L17 18" />
+      <path d="M24 24 L30 15" />
+      <path d="M24 24 L33 26" />
+      <path d="M24 24 L20 32" />
+      <path d="M24 24 L28 30" />
+    </>
+  ),
+  rockband: (
+    <>
+      <path d="M14 44 L14 14" />
+      <path d="M8 14 L20 14" />
+      <path d="M8 8 L11 8 L11 14" />
+      <path d="M17 8 L20 8 L20 14" />
+      <path d="M30 36 C30 30 34 28 34 22" />
+      <rect x="26" y="10" width="10" height="8" rx="1.5" />
     </>
   ),
 };

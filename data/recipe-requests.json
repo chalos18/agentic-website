@@ -1,0 +1,18 @@
+[
+  {
+    "id": "ee75f680-9305-4c79-ade5-4ed58ea75ff4",
+    "recipeName": "Butter Chicken",
+    "note": "Testing :)",
+    "submitterName": "Simmering Whisk",
+    "status": "open",
+    "createdAt": "2026-07-26T09:09:49.295Z"
+  },
+  {
+    "id": "336adb5d-97d1-44a7-9a22-3268af4d182c",
+    "recipeName": "asdsad",
+    "note": "asdas",
+    "submitterName": "Simmering Whisk",
+    "status": "open",
+    "createdAt": "2026-07-26T09:10:05.606Z"
+  }
+]

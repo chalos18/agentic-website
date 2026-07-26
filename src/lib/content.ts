@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
+export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'dessert' | 'snack';
+
 export interface PostFrontmatter {
   title: string;
   slug: string;
@@ -11,6 +13,11 @@ export interface PostFrontmatter {
   category?: string;
   ingredients?: string[];
   steps?: string[];
+  mealType?: MealType;
+  image?: string;
+  tags?: string[];
+  /** Set when this recipe was written in response to a public request — see `data/recipe-requests.json`. */
+  requestedBy?: string;
 }
 
 export interface ProjectFrontmatter {
@@ -60,6 +67,18 @@ export function getAllPosts(): { frontmatter: PostFrontmatter; content: string }
 
 export function getPostBySlug(slug: string) {
   return getAllPosts().find((post) => post.frontmatter.slug === slug) ?? null;
+}
+
+export function getAllBlogPosts() {
+  return getAllPosts().filter((post) => post.frontmatter.category !== 'recipe');
+}
+
+export function getAllRecipes() {
+  return getAllPosts().filter((post) => post.frontmatter.category === 'recipe');
+}
+
+export function getRecipeBySlug(slug: string) {
+  return getAllRecipes().find((post) => post.frontmatter.slug === slug) ?? null;
 }
 
 export function getAllProjects(): { frontmatter: ProjectFrontmatter; content: string }[] {

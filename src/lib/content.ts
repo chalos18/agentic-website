@@ -1,8 +1,8 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
 
-export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'dessert' | 'snack';
+export type MealType = "breakfast" | "lunch" | "dinner" | "dessert" | "snack";
 
 export interface PostFrontmatter {
   title: string;
@@ -26,7 +26,7 @@ export interface ProjectFrontmatter {
   date: string;
   tech: string[];
   summary: string;
-  category?: 'work' | 'personal';
+  category?: "work" | "personal";
 }
 
 export interface PaintingFrontmatter {
@@ -39,13 +39,13 @@ export interface PaintingFrontmatter {
   process?: string[];
 }
 
-const POSTS_DIR = path.join(process.cwd(), 'content', 'posts');
-const PROJECTS_DIR = path.join(process.cwd(), 'content', 'projects');
-const PAINTINGS_DIR = path.join(process.cwd(), 'content', 'paintings');
+const POSTS_DIR = path.join(process.cwd(), "content", "posts");
+const PROJECTS_DIR = path.join(process.cwd(), "content", "projects");
+const PAINTINGS_DIR = path.join(process.cwd(), "content", "paintings");
 
 function readMdxDir(dir: string) {
   if (!fs.existsSync(dir)) return [];
-  return fs.readdirSync(dir).filter((file) => file.endsWith('.mdx'));
+  return fs.readdirSync(dir).filter((file) => file.endsWith(".mdx"));
 }
 
 // gray-matter (via js-yaml) parses unquoted frontmatter dates (e.g. `date: 2026-04-27`)
@@ -54,12 +54,18 @@ function normalizeDate(date: unknown): string {
   return date instanceof Date ? date.toISOString().slice(0, 10) : String(date);
 }
 
-export function getAllPosts(): { frontmatter: PostFrontmatter; content: string }[] {
+export function getAllPosts(): {
+  frontmatter: PostFrontmatter;
+  content: string;
+}[] {
   return readMdxDir(POSTS_DIR)
     .map((file) => {
-      const raw = fs.readFileSync(path.join(POSTS_DIR, file), 'utf8');
+      const raw = fs.readFileSync(path.join(POSTS_DIR, file), "utf8");
       const { data, content } = matter(raw);
-      const frontmatter = { ...data, date: normalizeDate(data.date) } as PostFrontmatter;
+      const frontmatter = {
+        ...data,
+        date: normalizeDate(data.date),
+      } as PostFrontmatter;
       return { frontmatter, content };
     })
     .sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
@@ -69,55 +75,81 @@ export function getPostBySlug(slug: string) {
   return getAllPosts().find((post) => post.frontmatter.slug === slug) ?? null;
 }
 
+// "Blog post" and "recipe" are one concept — a post, filtered by its `category`
+// frontmatter — wearing four function names for callers' convenience.
+function getPostsByCategory(isRecipe: boolean) {
+  return getAllPosts().filter(
+    (post) => (post.frontmatter.category === "recipe") === isRecipe
+  );
+}
+
 export function getAllBlogPosts() {
-  return getAllPosts().filter((post) => post.frontmatter.category !== 'recipe');
+  return getPostsByCategory(false);
 }
 
 export function getAllRecipes() {
-  return getAllPosts().filter((post) => post.frontmatter.category === 'recipe');
+  return getPostsByCategory(true);
 }
 
 export function getRecipeBySlug(slug: string) {
   return getAllRecipes().find((post) => post.frontmatter.slug === slug) ?? null;
 }
 
-export function getAllProjects(): { frontmatter: ProjectFrontmatter; content: string }[] {
+export function getAllProjects(): {
+  frontmatter: ProjectFrontmatter;
+  content: string;
+}[] {
   return readMdxDir(PROJECTS_DIR)
     .map((file) => {
-      const raw = fs.readFileSync(path.join(PROJECTS_DIR, file), 'utf8');
+      const raw = fs.readFileSync(path.join(PROJECTS_DIR, file), "utf8");
       const { data, content } = matter(raw);
-      const frontmatter = { ...data, date: normalizeDate(data.date) } as ProjectFrontmatter;
+      const frontmatter = {
+        ...data,
+        date: normalizeDate(data.date),
+      } as ProjectFrontmatter;
       return { frontmatter, content };
     })
     .sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
 }
 
 export function getProjectBySlug(slug: string) {
-  return getAllProjects().find((project) => project.frontmatter.slug === slug) ?? null;
+  return (
+    getAllProjects().find((project) => project.frontmatter.slug === slug) ??
+    null
+  );
 }
 
-export function getAllPaintings(): { frontmatter: PaintingFrontmatter; content: string }[] {
+export function getAllPaintings(): {
+  frontmatter: PaintingFrontmatter;
+  content: string;
+}[] {
   return readMdxDir(PAINTINGS_DIR)
     .map((file) => {
-      const raw = fs.readFileSync(path.join(PAINTINGS_DIR, file), 'utf8');
+      const raw = fs.readFileSync(path.join(PAINTINGS_DIR, file), "utf8");
       const { data, content } = matter(raw);
-      const frontmatter = { ...data, date: normalizeDate(data.date) } as PaintingFrontmatter;
+      const frontmatter = {
+        ...data,
+        date: normalizeDate(data.date),
+      } as PaintingFrontmatter;
       return { frontmatter, content };
     })
     .sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
 }
 
 export function getPaintingBySlug(slug: string) {
-  return getAllPaintings().find((painting) => painting.frontmatter.slug === slug) ?? null;
+  return (
+    getAllPaintings().find((painting) => painting.frontmatter.slug === slug) ??
+    null
+  );
 }
 
 // Sample painting content can reference photos that haven't been added yet;
 // this lets the UI render an artistic placeholder instead of a broken image.
 export function paintingAssetExists(relativePath?: string): boolean {
   if (!relativePath) return false;
-  return fs.existsSync(path.join(process.cwd(), 'public', relativePath));
+  return fs.existsSync(path.join(process.cwd(), "public", relativePath));
 }
 
 export function paintingGivenToLabel(givenTo: string): string {
-  return givenTo === 'Kept' ? 'Kept by the artist' : `Given to ${givenTo}`;
+  return givenTo === "Kept" ? "Kept by the artist" : `Given to ${givenTo}`;
 }

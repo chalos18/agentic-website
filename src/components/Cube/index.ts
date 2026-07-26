@@ -1,9 +1,4 @@
-/**
- * Cube Components Index
- * Exports all cube-related components
- */
-
-export { default as CubeCanvas } from './CubeCanvas';
-export { default as CubeMesh } from './CubeMesh';
-export { default as CubeControls } from './CubeControls';
+export { default as PuzzleCanvas } from './PuzzleCanvas';
+export { default as PuzzleMesh } from './PuzzleMesh';
+export { default as PuzzleControls } from './PuzzleControls';
 export { default as MoveHistory } from './MoveHistory';

@@ -5,26 +5,25 @@
 
 'use client';
 
-import { MoveNotation } from '@/types/cube';
-
 interface MoveHistoryProps {
-    moves: MoveNotation[];
+    /** Any puzzle's notation, not just the 3x3's. */
+    moves: readonly string[];
 }
 
 export default function MoveHistory({ moves }: MoveHistoryProps) {
     // Group moves into lines of 8 for readability (standard notation format)
-    const groupedMoves = [];
+    const groupedMoves: string[][] = [];
     for (let i = 0; i < moves.length; i += 8) {
         groupedMoves.push(moves.slice(i, i + 8));
     }
 
     return (
         <div className="bg-cream-deep rounded-2xl p-6 border border-clay-line">
-            <h2 className="text-lg font-bold text-espresso mb-4">Move History</h2>
+            <h2 className="text-lg font-bold text-espresso mb-4">Move history</h2>
 
             <div className="space-y-2 max-h-64 overflow-y-auto">
                 {moves.length === 0 ? (
-                    <p className="text-espresso-light text-center py-8">No moves yet</p>
+                    <p className="text-espresso-light text-center py-8">Turn a face to start a solve.</p>
                 ) : (
                     <>
                         {groupedMoves.map((group, groupIdx) => (
@@ -46,9 +45,8 @@ export default function MoveHistory({ moves }: MoveHistoryProps) {
                         <p>
                             Total moves: <span className="text-terracotta-dark font-semibold">{moves.length}</span>
                         </p>
-                        <p>
-                            Notation:{' '}
-                            <span className="text-espresso-light/80 text-xs">R = Right, L = Left, U = Up, D = Down, F = Front, B = Back</span>
+                        <p className="text-espresso-light/80">
+                            A prime (&apos;) reverses a turn; a 2 makes it a half turn.
                         </p>
                     </div>
                 </div>

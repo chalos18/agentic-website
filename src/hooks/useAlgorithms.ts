@@ -12,9 +12,9 @@ interface UseAlgorithmsReturn {
     algorithms: Algorithm[];
     loading: boolean;
     error: string | null;
-    search: (query: string) => void;
-    filterByStage: (stage: SolvingStage) => void;
-    filterByDifficulty: (difficulty: number) => void;
+    search: (_query: string) => void;
+    filterByStage: (_stage: SolvingStage) => void;
+    filterByDifficulty: (_difficulty: number) => void;
     reset: () => void;
 }
 

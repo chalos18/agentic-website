@@ -10,11 +10,6 @@ When asked to work on this repo: prefer extending the existing content model (`c
 
 ## Commands
 
-- `npm run dev` — start the dev server (Next.js, hot reload)
-- `npm run build` — production build
-- `npm start` — run the production build
-- `npm run lint` / `npm run lint:fix` — ESLint (flat config in `eslint.config.js`, extends `next/core-web-vitals`)
-
 There is no test runner configured in this repo (no Jest/Vitest, no `*.test.*`/`*.spec.*` files, no `test` script). The puzzle engine under `src/services/puzzles/` is pure and dependency-free, so it is the part most worth covering first if one is added.
 
 Docker is not used in this repo; run the app with `npm run dev` (see `README.md`).
@@ -26,9 +21,11 @@ See `ARCHITECTURE.md` for the full breakdown (routing, the Rubik's Cube trainer 
 ## Standards
 
 ### Documentation
+
 Keep documentation (README, CLAUDE.md, ARCHITECTURE.md, code comments) brief, concise, clear, and made for ease of understanding. Prefer the shortest explanation that removes ambiguity over an exhaustive one.
 
 ### Code comments
+
 - Comments should not duplicate the code.
 - Good comments do not excuse unclear code — if the code needs a comment to be understood, first consider whether it can be made clearer instead.
 - If you can't write a clear comment, there may be a problem with the code.
@@ -40,9 +37,11 @@ Keep documentation (README, CLAUDE.md, ARCHITECTURE.md, code comments) brief, co
 - Use comments to mark incomplete implementations (e.g. `TODO`).
 
 ### Tests
+
 Structure tests using Given/When/Then, with a short comment noting what each part does. Skip the ceremony for small, self-explanatory tests — a clear test name is enough on its own; don't force the pattern when it doesn't add clarity.
 
 ### Workflow
+
 Always run linting and tests after making code changes, and fix any issues before considering the work complete.
 
 ## Project conventions (from `.github/instructions/portfolio-agent.instructions.md`)

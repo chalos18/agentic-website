@@ -1,19 +1,23 @@
-'use client';
+"use client";
 
-import { useMemo, useState } from 'react';
-import Link from 'next/link';
-import Doodle from '@/components/motifs/Doodle';
-import type { PostFrontmatter } from '@/lib/content';
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import Doodle from "@/components/motifs/Doodle";
+import type { PostFrontmatter } from "@/lib/content";
 
-export default function BlogList({ posts }: { posts: { frontmatter: PostFrontmatter }[] }) {
-  const [query, setQuery] = useState('');
+export default function BlogList({
+  posts,
+}: {
+  posts: { frontmatter: PostFrontmatter }[];
+}) {
+  const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return posts;
     return posts.filter(({ frontmatter }) =>
       [frontmatter.title, frontmatter.excerpt, ...(frontmatter.tags ?? [])]
-        .join(' ')
+        .join(" ")
         .toLowerCase()
         .includes(q)
     );
@@ -35,19 +39,38 @@ export default function BlogList({ posts }: { posts: { frontmatter: PostFrontmat
 
       <div className="space-y-5">
         {filtered.map(({ frontmatter }) => (
-          <article key={frontmatter.slug} className="p-5 rounded-2xl bg-cream-deep border border-clay-line">
+          <article
+            key={frontmatter.slug}
+            className="p-5 rounded-2xl bg-cream-deep border border-clay-line"
+          >
+            {frontmatter.pinned && (
+              <div className="flex items-center gap-1 text-terracotta-dark text-xs font-medium mb-1.5">
+                <Doodle variant="pin" className="w-3.5 h-3.5" />
+                Pinned
+              </div>
+            )}
             <h2 className="font-display text-xl font-semibold mb-1">
-              <Link href={`/blog/${frontmatter.slug}`} className="text-espresso hover:text-terracotta-dark">
+              <Link
+                href={`/blog/${frontmatter.slug}`}
+                className="text-espresso hover:text-terracotta-dark"
+              >
                 {frontmatter.title}
               </Link>
             </h2>
-            <p className="text-espresso-light text-sm mb-2">{frontmatter.excerpt}</p>
+            <p className="text-espresso-light text-sm mb-2">
+              {frontmatter.excerpt}
+            </p>
             <div className="flex items-center justify-between">
-              <time className="text-xs text-espresso-light/70">{frontmatter.date}</time>
+              <time className="text-xs text-espresso-light/70">
+                {frontmatter.semester ?? frontmatter.date}
+              </time>
               {frontmatter.tags && frontmatter.tags.length > 0 && (
                 <div className="flex gap-1.5">
                   {frontmatter.tags.map((tag) => (
-                    <span key={tag} className="px-2 py-0.5 rounded-full bg-sage/15 text-sage-dark text-xs font-medium">
+                    <span
+                      key={tag}
+                      className="px-2 py-0.5 rounded-full bg-sage/15 text-sage-dark text-xs font-medium"
+                    >
                       {tag}
                     </span>
                   ))}
@@ -56,7 +79,11 @@ export default function BlogList({ posts }: { posts: { frontmatter: PostFrontmat
             </div>
           </article>
         ))}
-        {filtered.length === 0 && <p className="text-sm text-espresso-light/70">No posts match your search.</p>}
+        {filtered.length === 0 && (
+          <p className="text-sm text-espresso-light/70">
+            No posts match your search.
+          </p>
+        )}
       </div>
     </div>
   );

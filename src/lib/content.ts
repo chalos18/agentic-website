@@ -18,6 +18,10 @@ export interface PostFrontmatter {
   tags?: string[];
   /** Set when this recipe was written in response to a public request — see `data/recipe-requests.json`. */
   requestedBy?: string;
+  /** Pinned posts sort first regardless of date — used for the intro post that gives new readers context. */
+  pinned?: boolean;
+  /** Display label shown instead of `date` (e.g. "Summer 2025") for coursework tied to a university term rather than a specific day. `date` still drives sorting. */
+  semester?: string;
 }
 
 export interface ProjectFrontmatter {
@@ -27,6 +31,8 @@ export interface ProjectFrontmatter {
   tech: string[];
   summary: string;
   category?: "work" | "personal";
+  /** Link to the project's source repository. */
+  repo?: string;
 }
 
 export interface PaintingFrontmatter {
@@ -68,7 +74,12 @@ export function getAllPosts(): {
       } as PostFrontmatter;
       return { frontmatter, content };
     })
-    .sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
+    .sort((a, b) => {
+      if (a.frontmatter.pinned !== b.frontmatter.pinned) {
+        return a.frontmatter.pinned ? -1 : 1;
+      }
+      return a.frontmatter.date < b.frontmatter.date ? 1 : -1;
+    });
 }
 
 export function getPostBySlug(slug: string) {

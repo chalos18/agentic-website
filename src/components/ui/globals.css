@@ -10,7 +10,14 @@ body {
 body {
   background-color: #fbf3e6;
   color: #3a2e28;
-  font-family: var(--font-body), system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-family:
+    var(--font-body),
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial;
 }
 
 h1,
@@ -100,4 +107,22 @@ h4 {
 
 .prose-warm li {
   margin: 0.35em 0;
+}
+
+.prose-warm figure {
+  margin: 1.5em 0;
+}
+
+.prose-warm img {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid #e4d5bd;
+  margin: 0;
+}
+
+.prose-warm figcaption {
+  color: #7a6a5d;
+  font-size: 0.85em;
+  text-align: center;
+  margin-top: 0.5em;
 }

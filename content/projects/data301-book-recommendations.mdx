@@ -1,0 +1,25 @@
+---
+title: "Book Pair Recommendations at Scale"
+slug: "data301-book-recommendations"
+date: 2025
+tech: ["Python", "Dask", "PyArrow", "Pandas", "Jupyter"]
+summary: "Market-basket analysis over the Goodreads dataset — a chunked Apriori implementation mining which book pairs are most frequently read together, to power sequel/series recommendations."
+category: "personal"
+---
+
+Final project for DATA301: which pairs of books are most strongly and frequently read
+together, based on real reading patterns? I treated each Goodreads user's read list as
+a "basket" and ran market-basket analysis (Apriori-style pair counting, plus confidence
+and interest scores) to surface book pairs worth recommending to each other — book A's
+readers frequently also read book B, so B becomes a candidate recommendation for A's
+readers.
+
+The dataset was too large to hold in memory as-is, so I converted the raw JSON into
+Parquet and processed it in chunks with Dask, accumulating pair counts across chunks
+rather than merging everything back into memory at once — an early attempt at the
+latter reintroduced the exact RAM exhaustion I was trying to avoid. The top-ranked
+pairs came back dominated by sequels and sagas (Twilight, The Hunger Games), which is a
+reassuring sanity check: the method recovers genuinely related books, not noise. The
+main lesson was scale-first design — chunking and incremental aggregation aren't
+optimizations to add later, they're the difference between a pipeline that finishes and
+one that gets killed by the OS.

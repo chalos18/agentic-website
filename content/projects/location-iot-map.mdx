@@ -1,0 +1,100 @@
+---
+title: "Location-Based IoT Map"
+slug: "location-iot-map"
+date: 2026
+tech: ["Raspberry Pi", "Arduino", "Node-RED", "MQTT", "Python"]
+summary: "A Monopoly-style physical map of Christchurch that lights up LEDs based on live phone geofencing, with a motorised LEGO climber and a weather-aware LCD status display."
+category: "personal"
+repo: "https://github.com/chalos18/PROD385Project"
+---
+
+<figure>
+  <img
+    src="/images/projects/prod385-final_product.jpg"
+    alt="The finished laser-engraved Christchurch map, wired with LEDs, an LCD status display, and the LEGO climber mechanism"
+  />
+  <figcaption>The finished system.</figcaption>
+</figure>
+
+Final project for PROD385 (Special Topic: Gadgets and Gizmos): a location-aware IoT
+system that turns digital presence into physical, mechanical feedback. A phone's
+geofencing publishes MQTT messages over a HiveMQ Cloud broker when I enter or leave key
+locations; two Raspberry Pis running Node-RED subscribe and react by lighting the
+matching LED on a laser-engraved, Monopoly-style board of Christchurch. An LCD1602
+shows an availability message alongside live weather pulled from an API, and a PIR
+sensor refines "at home" into "home and actually present."
+
+## Building the board
+
+The map itself is a 30×30cm plywood panel, laser-engraved with Christchurch's streets
+and raised on an 8cm wooden support frame to leave room underneath for wiring and
+soldered joints. I was not the most woodworking-savvy person going into this, and the
+Product Design department's lab technicians were a big part of why the engraving came
+out as clean as it did, and why the frame's glue joints actually held under clamping.
+
+<figure>
+  <img
+    src="/images/projects/prod385-engraved_board.jpg"
+    alt="The laser-engraved plywood map surface showing Christchurch's streets, with mounting holes drilled for LEDs"
+  />
+  <figcaption>
+    The laser-engraved map surface, with LED mounting holes drilled at each key
+    location.
+  </figcaption>
+</figure>
+
+Each location gets a pair of LED legs pushed through the board from below, soldered
+onto female headers rather than left loose — enough to translate a breadboard prototype
+into something that survives being handled as a physical object.
+
+## Software: MQTT, Node-RED, and the LCD
+
+Two Node-RED flows do the reacting. One subscribes to a `python/mqtt` topic, maps each
+incoming location payload to a GPIO pin, and switches the matching LED on while forcing
+every other one off, so only one location is ever lit at a time. The second subscribes
+to `home/presence`, published by the PIR sensor's Raspberry Pi, lights the home LED, and
+publishes an acknowledgment back so the sensor side can confirm the round trip actually
+worked rather than assuming it did.
+
+<figure>
+  <img
+    src="/images/projects/prod385-node_red_flow1.png"
+    alt="A Node-RED flow diagram showing MQTT subscription nodes feeding into GPIO and LCD output nodes"
+  />
+  <figcaption>One of the Node-RED flows: MQTT in, GPIO and LCD out.</figcaption>
+</figure>
+
+The LCD1602 runs off the same flow, showing a status line alongside live weather pulled
+from the OpenWeather API — truncated to 16 characters per line and only rewritten when
+the content actually changes, to avoid visible flicker.
+
+<figure>
+  <img
+    src="/images/projects/prod385-lcd_board.jpeg"
+    alt="The LCD1602 display mounted on the board and wired via I2C"
+  />
+  <figcaption>LCD1602 mounted and wired.</figcaption>
+</figure>
+
+## The climbing mechanism
+
+The part I enjoyed most was the mechanical subsystem: a TT DC motor driven through an
+L293D driver winds fishing line around a spool to raise and lower a LEGO climber against
+a textured panel — a small physical flourish on top of an otherwise all-digital system.
+The motor driver matters here beyond convenience: GPIO pins can't supply the current a
+motor needs, and driving one directly from a Pi or Arduino pin risks the pin itself, so
+the L293D handles both direction and PWM speed control between the microcontroller and
+the motor.
+
+<figure>
+  <img
+    src="/images/projects/prod385-climbing_batman.jpg"
+    alt="A LEGO minifigure rigged to the climbing mechanism's fishing line, mid-climb against the textured panel"
+  />
+  <figcaption>The climber, mid-ascent.</figcaption>
+</figure>
+
+Getting there meant picking up skills well outside my usual stack — soldering, wiring a
+PIR sensor and I²C LCD, laser-engraving the board, and building the support frame —
+again with a lot of help from the lab technicians, who were far better than me at both
+woodworking and knowing why an LED wouldn't light.

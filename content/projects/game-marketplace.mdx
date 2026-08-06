@@ -1,0 +1,26 @@
+---
+title: "Game Marketplace"
+slug: "game-marketplace"
+date: 2025
+tech: ["React", "TypeScript", "Material UI", "Zustand", "React Router"]
+summary: "A full-stack game marketplace built for SENG365 (Web Computing Architectures) — browse, wishlist, own, and review games against a REST API, with auth and profile management."
+category: "personal"
+repo: "https://github.com/chalos18/game-app"
+---
+
+Final project for SENG365 (Web Computing Architectures): a React front end over a REST
+API for a game marketplace. Users can register, log in, browse and filter the
+catalogue, and separately track games they own versus games they've wishlisted — the
+two lists are deliberately distinct, since "want to play" and "already own" are
+different states that most simple game-list apps conflate.
+
+Built with Material UI for the component layer, Zustand for client state (auth session,
+current user), and React Router for the app shell — routing between the game catalogue,
+individual game pages, login/registration, and profile editing. Game owners can create
+and edit their own listings, and any user can leave a review, so the app covers both
+sides of a marketplace: browsing/discovery and content ownership/moderation.
+
+A user's profile splits into four separate views rather than one undifferentiated list —
+games they've created, games they own, games they've reviewed, and games they've
+wishlisted — since those are genuinely different relationships to a game and collapsing
+them into one feed would have hidden which one you were looking at.

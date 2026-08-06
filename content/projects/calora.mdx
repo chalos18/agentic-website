@@ -1,0 +1,33 @@
+---
+title: "Calora"
+slug: "calora"
+date: 2026
+tech: ["TypeScript", "React Native", "Expo", "Hono", "PostgreSQL"]
+summary: "An ongoing mobile-first nutrition tracker — log meals against calorie and macro goals derived from your body and your objective, backed by real USDA portion data."
+category: "personal"
+repo: "https://github.com/chalos18/calora"
+---
+
+A nutrition tracker: log what you eat into a daily diary and see it against calorie and
+macronutrient goals derived from your body and your goal. Mobile-first (iOS, Android)
+with a web companion, from one Expo monorepo — `apps/mobile` for the Expo Router app,
+`packages/core` for dependency-free domain logic (TDEE, macro targets, portion math,
+ranking), and a Hono server over Postgres for the API.
+
+The part I'm most deliberate about is refusing to fake precision: if a food has no
+sourced cup measurement and no density category, Calora won't invent one rather than
+guess a weight — a tablespoon of broccoli falls back to a density table and gets marked
+`≈` because that number is inferred, not measured. The dev server runs Postgres
+in-process (PGlite) so there's nothing to install to try it, and the food registry is
+seeded from ~7,928 real USDA entries rather than placeholder data. Still early — the
+core logging loop works end to end, but barcode scanning, recipe import, and plate
+photos aren't built yet.
+
+I've kept the verification side proportionate to a solo project: 159 tests and a
+typecheck across all four packages on every change, a smoke test that asserts the
+things that would otherwise fail silently (a cup of black beans really does resolve to
+194g from a sourced portion, a food with no portion data is refused rather than
+guessed), and a scripted browser run that drives onboarding and logging end to end and
+screenshots each step. Design decisions live as ADRs in the repo rather than in my head
+— including the ones that look like mistakes without the reasoning attached, like why
+sign-in currently has no password.
